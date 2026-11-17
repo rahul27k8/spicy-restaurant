@@ -19,7 +19,7 @@ html { scroll-behavior: smooth; }
 body { margin: 0; background: var(--paper); color: var(--ink); font: 16px/1.55 var(--body); }
 img { display: block; width: 100%; height: auto; }
 figure, blockquote, dl, dd { margin: 0; }
-h1, h2, h3, p { margin: 0; }
+h1, h2, h3, h4, p { margin: 0; }
 a { color: inherit; text-underline-offset: .22em; }
 a:focus-visible { outline: 3px solid #b55d2e; outline-offset: 5px; }
 .wrap { width: min(88%, 1200px); margin-inline: auto; }
@@ -64,7 +64,7 @@ h3 { font-size: clamp(2rem, 3vw, 3rem); }
 .section-head { display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 1.2rem; margin-bottom: 2.25rem; }
 .section-head .eyebrow, .visit .eyebrow { margin-bottom: .85rem; }
 .section-head > p, .dish-info > p:last-child, .photo-note { color: var(--muted); }
-.specialities .eyebrow, .reviews .eyebrow { color: var(--accent); }
+.reviews .eyebrow { color: var(--accent); }
 .dish-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(1rem, 3vw, 2rem); }
 .dish { overflow: hidden; border: 1px solid var(--rule); border-radius: 1.35rem; background: var(--surface); }
 .dish img { aspect-ratio: 1.42; object-fit: cover; }
@@ -116,17 +116,28 @@ footer .brand-mark { color: var(--gold); }
 .section-head > p { max-width: 34ch; }
 .menu { background: var(--surface); border-top: 1px solid var(--rule); }
 .menu .eyebrow { color: var(--accent); }
-.menu-grid { display: grid; gap: .8rem; }
-.menu-group { background: var(--paper); border: 1px solid var(--rule); border-radius: 1rem; }
-.menu-group summary { padding: 1rem 1.25rem; cursor: pointer; font-weight: 700; border-radius: .9rem; }
-.menu-group summary::marker { color: var(--accent); }
-.menu-group summary:hover { background: var(--soft); }
-.menu-group summary:focus-visible { outline: 3px solid #854323; outline-offset: 2px; }
-.menu-items { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 2rem; padding: 0 1.25rem .6rem; }
+.menu-nav { display: flex; flex-wrap: wrap; gap: .65rem; padding-bottom: 1.2rem; border-bottom: 1px solid var(--rule); }
+.menu-nav a { display: inline-flex; align-items: center; min-height: 44px; border: 1px solid var(--rule); border-radius: 999px; padding: .55rem .9rem; background: var(--paper); font-weight: 700; text-decoration: none; }
+.menu-nav a:hover { background: var(--soft); border-color: var(--accent); }
+.menu-featured, .menu-group, #mixed-plate { scroll-margin-top: 1rem; }
+.menu-featured { margin-block: 2rem 2.5rem; }
+.menu-featured > h3, .menu-group > h3 { margin-bottom: 1.15rem; }
+.thali { display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: .8rem 1.25rem; border-radius: 1.35rem; padding: clamp(1.2rem, 4vw, 2.2rem); margin-bottom: 1rem; background: var(--forest); color: var(--paper); }
+.thali h4, .dish-heading h4 { font: 750 clamp(1.5rem, 3vw, 2.2rem)/1.1 var(--display); letter-spacing: -.035em; }
+.thali h4 { margin-bottom: .45rem; }
+.thali-price { color: var(--gold); font-size: 1.5rem; font-weight: 700; }
+.thali-compare { margin-top: .65rem; color: #e3d7bf; }
+.thali-compare a { color: var(--gold); font-weight: 700; }
+.thali-compare a:focus-visible { outline-color: var(--gold); }
+.menu-grid { display: grid; gap: 1rem; }
+.menu-group { padding: clamp(1.05rem, 3vw, 2rem); background: var(--paper); border: 1px solid var(--rule); border-radius: 1rem; }
+.menu-columns { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.2rem 2rem; }
+.menu-subgroup h4 { color: var(--accent); margin-bottom: .5rem; font-size: .92rem; }
 .menu-items div { display: flex; gap: .75rem; justify-content: space-between; padding: .48rem 0; border-top: 1px solid var(--rule); }
 .menu-items dd { font-weight: 700; white-space: nowrap; font-variant-numeric: tabular-nums; }
+#mixed-plate:target { background: #ffe2a4; padding-inline: .5rem; }
 @media (max-width: 660px) {
-  .menu-items { grid-template-columns: 1fr; }
+  .menu-columns { grid-template-columns: 1fr; }
   .nav nav { gap: clamp(1rem, 6vw, 2rem); }
 }
 
