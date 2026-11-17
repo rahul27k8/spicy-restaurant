@@ -18,4 +18,4 @@ In the repository’s **Settings → Pages**, choose **Deploy from a branch** an
 
 - The [Google Maps listing](https://www.google.com/maps?cid=849003724971903692) supplies the address, business hours, phone number, and attributed five-star review excerpts.
 - The kadhi rice and rajma rice images were generated with ImageGen and are labeled as illustrations on the site. Replace the two JPEGs and the image labels if current restaurant photos become available.
-- The storefront photo and two dining-room video stills were supplied by the restaurant. Menu items and prices were transcribed from its printed menu.
+- The storefront photo was supplied by the restaurant. Menu items and prices were transcribed from its printed menu.
