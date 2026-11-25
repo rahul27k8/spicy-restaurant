@@ -28,13 +28,13 @@ const menuSections = categoryLinks.map((link) =>
 );
 const menuNav = document.querySelector(".menu-nav");
 const plating = document.querySelector(".plating-hero");
-const foodLayers = [...plating.querySelectorAll(".food-layer")].map((element) => ({
+const foodLayers = [...(plating?.querySelectorAll(".food-layer") ?? [])].map((element) => ({
   element,
   start: Number(element.dataset.start),
   end: Number(element.dataset.end),
   opacity: -1
 }));
-const ingredientSteps = [...plating.querySelectorAll(".plating-steps li")];
+const ingredientSteps = [...(plating?.querySelectorAll(".plating-steps li") ?? [])];
 let pageFrame;
 let needsMeasure = true;
 let animated = false;
@@ -55,11 +55,11 @@ const smooth = (value) => {
 // Layout is measured on size changes, never in the scroll animation loop.
 function measurePage() {
   animated = !motionPreference.matches && !compactViewport.matches && !connection?.saveData;
-  plating.classList.toggle("plating-motion", animated);
+  plating?.classList.toggle("plating-motion", animated);
   const scrollY = window.scrollY;
-  heroTop = plating.getBoundingClientRect().top + scrollY;
-  heroDistance = Math.max(1, plating.offsetHeight - window.innerHeight);
-  categoryMarker = menuNav.offsetHeight + 32;
+  heroTop = plating ? plating.getBoundingClientRect().top + scrollY : 0;
+  heroDistance = plating ? Math.max(1, plating.offsetHeight - window.innerHeight) : 1;
+  categoryMarker = (menuNav?.offsetHeight ?? 0) + 32;
   sectionTops = menuSections.map((section) =>
     section.getBoundingClientRect().top + scrollY
   );
@@ -81,6 +81,7 @@ function updateCategory(scrollY) {
 }
 
 function updatePlating(scrollY) {
+  if (!plating) return;
   const progress = animated ? clamp((scrollY - heroTop) / heroDistance) : 1;
   if (progress === lastProgress) return;
   lastProgress = progress;
