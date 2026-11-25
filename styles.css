@@ -121,7 +121,11 @@ footer .brand-mark { color: var(--gold); }
 .menu-featured, .menu-group, #mixed-plate { scroll-margin-top: 1rem; }
 .menu-featured { margin-block: 2rem 2.5rem; }
 .menu-featured > h3, .menu-group > h3 { margin-bottom: 1.15rem; }
-.thali { display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: .8rem 1.25rem; border-radius: 1.35rem; padding: clamp(1.2rem, 4vw, 2.2rem); margin-bottom: 1rem; background: var(--forest); color: var(--paper); }
+.thali { display: grid; grid-template-columns: minmax(0, .85fr) minmax(0, 1fr); align-items: center; overflow: hidden; border-radius: 1.35rem; margin-bottom: 1rem; background: var(--forest); color: var(--paper); }
+.thali > img { aspect-ratio: 1; object-fit: cover; }
+.thali-info { padding: clamp(1.2rem, 4vw, 2.5rem); }
+.thali-info p { max-width: 34ch; color: #e3d7bf; }
+@media (max-width: 660px) { .thali { grid-template-columns: 1fr; } }
 .thali h4, .dish-heading h4 { font: 750 clamp(1.5rem, 3vw, 2.2rem)/1.1 var(--display); letter-spacing: -.035em; }
 .thali h4 { margin-bottom: .45rem; }
 .menu-grid { display: grid; gap: 1rem; }
