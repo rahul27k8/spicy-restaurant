@@ -1,3 +1,5 @@
+@font-face { font-family: "Bricolage Grotesque"; font-style: normal; font-weight: 650 750; font-display: swap; src: url("./assets/fonts/bricolage.woff2") format("woff2"); }
+@font-face { font-family: "DM Sans"; font-style: normal; font-weight: 400 700; font-display: swap; src: url("./assets/fonts/dm-sans.woff2") format("woff2"); }
 :root {
   color-scheme: light;
   --paper: #f9f3e6;
@@ -156,8 +158,8 @@ h2 em { color: var(--accent); }
 .plating-hero h1 { font-size: clamp(3.4rem, 6.9vw, 7rem); line-height: .98; letter-spacing: -.065em; }
 .plating-hero .eyebrow { font-size: .72rem; }
 .hero-practical { margin-top: 1.6rem; color: #d8d7c6; font-size: .85rem; line-height: 1.8; }
-.plating-visual { min-width: 0; position: relative; }
-.plate-canvas { position: relative; width: min(100%, 64svh); aspect-ratio: 1; margin-inline: auto; isolation: isolate; filter: drop-shadow(0 24px 24px #07150d65); }
+.plating-visual { min-width: 0; position: relative; overflow: clip; padding-top: 1rem; }
+.plate-canvas { position: relative; width: min(100%, 64svh); aspect-ratio: 1; margin-inline: auto; isolation: isolate; border-radius: 50%; box-shadow: 0 20px 30px #07150d40; }
 .plate-canvas img { position: absolute; inset: 0; width: 100%; height: 100%; border-radius: 50%; }
 .plate-base { z-index: 0; }
 .food-layer { z-index: 1; }
@@ -187,13 +189,11 @@ h2 em { color: var(--accent); }
 @media (prefers-reduced-motion: no-preference) {
   .plating-motion { height: 300svh; }
   .plating-motion .plating-sticky { position: sticky; top: 0; min-height: 100svh; }
-  .plating-motion .plate-canvas { transform: rotate(var(--plate-turn, -4deg)); }
-  .plating-motion .food-layer { opacity: var(--food-opacity, 0); transform: translateY(var(--food-drop, -80px)) rotate(var(--food-turn, -5deg)); }
+  .plating-motion .food-layer { opacity: var(--food-opacity, 0); }
   .plating-motion .plate-finished { opacity: var(--finished-opacity, 0); }
   .plating-motion .plating-hint { display: block; }
-  .plating-motion .plating-hint span { display: inline-block; animation: nudge-down 1.5s ease-in-out infinite; }
+
 }
-@keyframes nudge-down { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(5px); } }
 @media (max-width: 760px) {
   .plating-sticky { grid-template-columns: 1fr; gap: 1.6rem; padding-block: 2rem; }
   .plating-hero h1 { font-size: clamp(2.8rem, 11vw, 4.7rem); margin-top: .8rem; }
@@ -210,4 +210,11 @@ h2 em { color: var(--accent); }
 @media (max-width: 760px) and (prefers-reduced-motion: no-preference) {
   .plating-motion { height: 270svh; }
   .plating-motion .plating-sticky { gap: .8rem; padding-block: 1.25rem; align-content: center; }
+}
+
+.serving-tool { display: none; }
+@media (prefers-reduced-motion: no-preference) {
+  .plating-motion .serving-tool { display: block; position: absolute; z-index: 4; width: 62%; aspect-ratio: 1; left: 0; top: 0; opacity: var(--tool-opacity, 0); transform-origin: 23% 80%; transform: translate(var(--tool-x, 0px), var(--tool-y, 0px)) translate(-23%, -80%) rotate(var(--tool-angle, 0deg)); pointer-events: none; }
+  .serving-tool img { border-radius: 0; }
+  .utensil-bite { position: absolute; left: 7%; top: 65%; width: 30%; height: 27%; border-radius: 50%; background: var(--bite-image, none) var(--bite-position, 20% 75%) / 440% 440%; transform: rotate(-40deg) scale(var(--bite-scale, 1)); opacity: var(--bite-opacity, 0); }
 }

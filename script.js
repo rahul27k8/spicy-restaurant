@@ -1,5 +1,6 @@
 const motionPreference = window.matchMedia("(prefers-reduced-motion: reduce)");
 const compactViewport = window.matchMedia("(max-height: 560px)");
+const connection = navigator.connection;
 
 if ("IntersectionObserver" in window) {
   const revealObserver = new IntersectionObserver((entries, observer) => {
@@ -12,7 +13,6 @@ if ("IntersectionObserver" in window) {
           entry.target.classList.remove("reveal-in");
         }, { once: true });
       }
-
       observer.unobserve(entry.target);
     });
   }, { threshold: 0.12 });
@@ -26,10 +26,31 @@ const categoryLinks = [...document.querySelectorAll(".menu-nav a")];
 const menuSections = categoryLinks.map((link) =>
   document.getElementById(link.hash.slice(1))
 );
+const menuNav = document.querySelector(".menu-nav");
 const plating = document.querySelector(".plating-hero");
-const foodLayers = [...plating.querySelectorAll(".food-layer")];
+const plateCanvas = plating.querySelector(".plate-canvas");
+const plateImage = plating.querySelector(".plate-finished");
+const foodLayers = [...plating.querySelectorAll(".food-layer")].map((element) => ({
+  element,
+  start: Number(element.dataset.start),
+  end: Number(element.dataset.end),
+  x: Number(element.dataset.x) / 100,
+  y: Number(element.dataset.y) / 100,
+  opacity: -1
+}));
 const ingredientSteps = [...plating.querySelectorAll(".plating-steps li")];
+const bitePositions = ["20% 75%", "20% 25%", "50% 22%", "70% 70%", "80% 25%"];
 let pageFrame;
+let needsMeasure = true;
+let animated = false;
+let heroTop = 0;
+let heroDistance = 1;
+let plateWidth = 0;
+let categoryMarker = 0;
+let sectionTops = [];
+let lastProgress = -1;
+let lastCategory = -1;
+let lastIngredient = -1;
 
 const clamp = (value) => Math.max(0, Math.min(1, value));
 const smooth = (value) => {
@@ -37,51 +58,85 @@ const smooth = (value) => {
   return progress * progress * (3 - 2 * progress);
 };
 
-function updateCategory() {
-  const marker = document.querySelector(".menu-nav").getBoundingClientRect().bottom + 32;
-  let currentSection = menuSections[0];
+// Layout is measured on size changes, never in the scroll animation loop.
+function measurePage() {
+  animated = !motionPreference.matches && !compactViewport.matches && !connection?.saveData;
+  plating.classList.toggle("plating-motion", animated);
+  const scrollY = window.scrollY;
+  heroTop = plating.getBoundingClientRect().top + scrollY;
+  heroDistance = Math.max(1, plating.offsetHeight - window.innerHeight);
+  plateWidth = plateCanvas.clientWidth;
+  categoryMarker = menuNav.offsetHeight + 32;
+  sectionTops = menuSections.map((section) =>
+    section.getBoundingClientRect().top + scrollY
+  );
+  plating.style.setProperty("--bite-image", "url(" + JSON.stringify(plateImage.currentSrc || plateImage.src) + ")");
+  lastProgress = -1;
+  needsMeasure = false;
+}
 
-  menuSections.forEach((section) => {
-    if (section.getBoundingClientRect().top <= marker) currentSection = section;
+function updateCategory(scrollY) {
+  let current = 0;
+  sectionTops.forEach((top, index) => {
+    if (top <= scrollY + categoryMarker) current = index;
   });
-
-  categoryLinks.forEach((link) => {
-    if (link.hash === "#" + currentSection.id) {
-      link.setAttribute("aria-current", "location");
-    } else {
-      link.removeAttribute("aria-current");
-    }
+  if (current === lastCategory) return;
+  lastCategory = current;
+  categoryLinks.forEach((link, index) => {
+    if (index === current) link.setAttribute("aria-current", "location");
+    else link.removeAttribute("aria-current");
   });
 }
 
-function updatePlating() {
-  const animated = !motionPreference.matches && !compactViewport.matches;
-  plating.classList.toggle("plating-motion", animated);
-  const distance = Math.max(1, plating.offsetHeight - window.innerHeight);
-  const progress = animated ? clamp(-plating.getBoundingClientRect().top / distance) : 1;
+function updatePlating(scrollY) {
+  const progress = animated ? clamp((scrollY - heroTop) / heroDistance) : 1;
+  if (progress === lastProgress) return;
+  lastProgress = progress;
 
-  foodLayers.forEach((layer, index) => {
-    const start = Number(layer.dataset.start);
-    const end = Number(layer.dataset.end);
-    const local = smooth((progress - start) / (end - start));
-    layer.style.setProperty("--food-opacity", clamp(local * 4));
-    layer.style.setProperty("--food-drop", (1 - local) * -90 + "px");
-    layer.style.setProperty("--food-turn", (1 - local) * (index % 2 ? 6 : -6) + "deg");
+  foodLayers.forEach((layer) => {
+    const local = clamp((progress - layer.start) / (layer.end - layer.start));
+    const opacity = smooth((local - .48) / .25);
+    if (opacity === layer.opacity) return;
+    layer.opacity = opacity;
+    layer.element.style.setProperty("--food-opacity", opacity);
   });
 
-  plating.style.setProperty("--plate-turn", -4 + progress * 4 + "deg");
-  plating.style.setProperty("--finished-opacity", smooth((progress - .92) / .08));
-  const currentStep = Math.min(ingredientSteps.length - 1, Math.floor(progress * ingredientSteps.length));
-  ingredientSteps.forEach((step, index) => {
-    if (index === currentStep) step.setAttribute("aria-current", "step");
-    else step.removeAttribute("aria-current");
-  });
+  const index = foodLayers.findIndex((layer) => progress < layer.end);
+  const current = index === -1 ? foodLayers.length - 1 : index;
+  const layer = foodLayers[current];
+  const local = clamp((progress - layer.start) / (layer.end - layer.start));
+  const approach = smooth(local / .38);
+  const tip = smooth((local - .38) / .25);
+  const retreat = smooth((local - .68) / .32);
+  const travel = 1 - approach + retreat;
+  const opacity = animated && progress >= layer.start && index !== -1
+    ? clamp(local / .08) * (1 - smooth((local - .9) / .1))
+    : 0;
+
+  plating.style.setProperty("--tool-x", (layer.x + travel * .44) * plateWidth + "px");
+  plating.style.setProperty("--tool-y", (layer.y - travel * .38) * plateWidth + "px");
+  plating.style.setProperty("--tool-angle", -12 + tip * 34 - retreat * 22 + "deg");
+  plating.style.setProperty("--tool-opacity", opacity);
+  plating.style.setProperty("--bite-opacity", 1 - smooth((local - .42) / .3));
+  plating.style.setProperty("--bite-scale", 1 - tip * .18);
+  plating.style.setProperty("--finished-opacity", smooth((progress - .94) / .06));
+
+  if (current !== lastIngredient) {
+    lastIngredient = current;
+    plating.style.setProperty("--bite-position", bitePositions[current]);
+    ingredientSteps.forEach((step, stepIndex) => {
+      if (stepIndex === current) step.setAttribute("aria-current", "step");
+      else step.removeAttribute("aria-current");
+    });
+  }
 }
 
 function updatePage() {
   pageFrame = undefined;
-  updateCategory();
-  updatePlating();
+  if (needsMeasure) measurePage();
+  const scrollY = window.scrollY;
+  updateCategory(scrollY);
+  updatePlating(scrollY);
 }
 
 function schedulePageUpdate() {
@@ -89,8 +144,19 @@ function schedulePageUpdate() {
   pageFrame = requestAnimationFrame(updatePage);
 }
 
+function refreshLayout() {
+  needsMeasure = true;
+  schedulePageUpdate();
+}
+
 window.addEventListener("scroll", schedulePageUpdate, { passive: true });
-window.addEventListener("resize", schedulePageUpdate);
-motionPreference.addEventListener("change", schedulePageUpdate);
-compactViewport.addEventListener("change", schedulePageUpdate);
+window.addEventListener("resize", refreshLayout);
+window.addEventListener("load", refreshLayout);
+motionPreference.addEventListener("change", refreshLayout);
+compactViewport.addEventListener("change", refreshLayout);
+connection?.addEventListener("change", refreshLayout);
+document.fonts?.ready.then(refreshLayout);
+if ("ResizeObserver" in window) {
+  new ResizeObserver(refreshLayout).observe(document.body);
+}
 updatePage();
