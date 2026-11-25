@@ -155,7 +155,7 @@ h1 em, h2 em { font-style: normal; }
 h2 em { color: var(--accent); }
 .plating-hero { position: relative; }
 .plating-sticky { display: grid; grid-template-columns: .9fr 1.1fr; align-items: center; gap: clamp(1rem, 4vw, 4rem); min-height: 90svh; padding-block: 3rem; }
-.plating-hero h1 { font-size: clamp(3.4rem, 6.9vw, 7rem); line-height: .98; letter-spacing: -.065em; }
+.plating-hero .plating-title { font-size: clamp(3.4rem, 6.9vw, 7rem); line-height: .98; letter-spacing: -.065em; }
 .plating-hero .eyebrow { font-size: .72rem; }
 .hero-practical { margin-top: 1.6rem; color: #d8d7c6; font-size: .85rem; line-height: 1.8; }
 .plating-visual { min-width: 0; position: relative; overflow: clip; padding-top: 1rem; }
@@ -195,7 +195,7 @@ h2 em { color: var(--accent); }
 }
 @media (max-width: 760px) {
   .plating-sticky { grid-template-columns: 1fr; gap: 1.6rem; padding-block: 2rem; }
-  .plating-hero h1 { font-size: clamp(2.8rem, 11vw, 4.7rem); margin-top: .8rem; }
+  .plating-hero .plating-title { font-size: clamp(2.8rem, 11vw, 4.7rem); margin-top: .8rem; }
   .plating-hero .intro { font-size: .96rem; max-width: 40ch; }
   .plating-hero .actions { margin-top: 1rem; gap: 1rem; }
   .hero-practical { margin-top: .8rem; font-size: .76rem; line-height: 1.5; }
@@ -230,3 +230,7 @@ h2 em { color: var(--accent); }
   .nav nav { gap: clamp(.8rem, 4vw, 2rem); }
   .nav nav a { font-size: .85rem; }
 }
+
+#our-thali { scroll-margin-top: 0; border-top: 1px solid #ffffff28; }
+.plating-title { margin-block: 1.5rem 1.3rem; }
+.hero .plating-title em { color: var(--gold); }
