@@ -160,15 +160,15 @@ h2 em { color: var(--accent); }
 .hero-practical { margin-top: 1.6rem; color: #d8d7c6; font-size: .85rem; line-height: 1.8; }
 .plating-visual { min-width: 0; position: relative; overflow: clip; padding-top: 1rem; }
 .plate-canvas { position: relative; width: min(100%, 64svh); aspect-ratio: 1; margin-inline: auto; isolation: isolate; border-radius: 50%; box-shadow: 0 20px 30px #07150d40; }
-.plate-canvas img { position: absolute; inset: 0; width: 100%; height: 100%; border-radius: 50%; }
+.plate-canvas img { position: absolute; }
+.plate-base { inset: 0; width: 100%; height: 100%; border-radius: 50%; }
 .plate-base { z-index: 0; }
-.food-layer { z-index: 1; }
-.layer-rice { clip-path: polygon(3% 41%, 51% 41%, 45% 49%, 41% 58%, 40% 70%, 44% 82%, 50% 91%, 48% 96%, 22% 91%, 8% 73%, 3% 55%); }
-.layer-kadhi { clip-path: polygon(4% 39%, 6% 21%, 20% 9%, 33% 9%, 38% 39%); }
-.layer-rajma { clip-path: polygon(33% 3%, 67% 3%, 65% 40%, 38% 40%); }
-.layer-roti { clip-path: polygon(51% 41%, 94% 41%, 97% 64%, 82% 88%, 48% 96%, 50% 91%, 44% 82%, 40% 70%, 41% 58%, 45% 49%); }
-.layer-salad { clip-path: polygon(67% 10%, 83% 13%, 95% 35%, 94% 40%, 65% 40%); }
-.plate-finished { z-index: 2; }
+.food-layer { z-index: 1; object-fit: fill; }
+.layer-rice { left: 8%; top: 43%; width: 41%; height: 48%; }
+.layer-kadhi { left: 10%; top: 13%; width: 27%; height: 27%; }
+.layer-rajma { left: 36%; top: 7%; width: 28%; height: 32%; }
+.layer-roti { left: 39%; top: 43%; width: 51%; height: 46%; }
+.layer-salad { left: 66%; top: 15%; width: 23%; height: 24%; }
 .plating-steps { display: flex; flex-wrap: wrap; list-style: none; justify-content: center; gap: .45rem; padding: 0; margin: 1.5rem 0 .7rem; }
 .plating-steps li { font-size: .8rem; padding: .35rem .65rem; border: 1px solid #f6bd5940; border-radius: 999px; color: #eee6d3; }
 .plating-steps li[aria-current="step"] { color: var(--deep-green); background: var(--gold); border-color: var(--gold); }
@@ -189,8 +189,7 @@ h2 em { color: var(--accent); }
 @media (prefers-reduced-motion: no-preference) {
   .plating-motion { height: 300svh; }
   .plating-motion .plating-sticky { position: sticky; top: 0; min-height: 100svh; }
-  .plating-motion .food-layer { opacity: var(--food-opacity, 0); }
-  .plating-motion .plate-finished { opacity: var(--finished-opacity, 0); }
+  .plating-motion .food-layer { opacity: var(--food-opacity, 0); transform: translateY(var(--food-y, -22px)); }
   .plating-motion .plating-hint { display: block; }
 
 }
@@ -210,11 +209,4 @@ h2 em { color: var(--accent); }
 @media (max-width: 760px) and (prefers-reduced-motion: no-preference) {
   .plating-motion { height: 270svh; }
   .plating-motion .plating-sticky { gap: .8rem; padding-block: 1.25rem; align-content: center; }
-}
-
-.serving-tool { display: none; }
-@media (prefers-reduced-motion: no-preference) {
-  .plating-motion .serving-tool { display: block; position: absolute; z-index: 4; width: 62%; aspect-ratio: 1; left: 0; top: 0; opacity: var(--tool-opacity, 0); transform-origin: 23% 80%; transform: translate(var(--tool-x, 0px), var(--tool-y, 0px)) translate(-23%, -80%) rotate(var(--tool-angle, 0deg)); pointer-events: none; }
-  .serving-tool img { border-radius: 0; }
-  .utensil-bite { position: absolute; left: 7%; top: 65%; width: 30%; height: 27%; border-radius: 50%; background: var(--bite-image, none) var(--bite-position, 20% 75%) / 440% 440%; transform: rotate(-40deg) scale(var(--bite-scale, 1)); opacity: var(--bite-opacity, 0); }
 }

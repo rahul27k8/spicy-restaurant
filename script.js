@@ -28,24 +28,18 @@ const menuSections = categoryLinks.map((link) =>
 );
 const menuNav = document.querySelector(".menu-nav");
 const plating = document.querySelector(".plating-hero");
-const plateCanvas = plating.querySelector(".plate-canvas");
-const plateImage = plating.querySelector(".plate-finished");
 const foodLayers = [...plating.querySelectorAll(".food-layer")].map((element) => ({
   element,
   start: Number(element.dataset.start),
   end: Number(element.dataset.end),
-  x: Number(element.dataset.x) / 100,
-  y: Number(element.dataset.y) / 100,
   opacity: -1
 }));
 const ingredientSteps = [...plating.querySelectorAll(".plating-steps li")];
-const bitePositions = ["20% 75%", "20% 25%", "50% 22%", "70% 70%", "80% 25%"];
 let pageFrame;
 let needsMeasure = true;
 let animated = false;
 let heroTop = 0;
 let heroDistance = 1;
-let plateWidth = 0;
 let categoryMarker = 0;
 let sectionTops = [];
 let lastProgress = -1;
@@ -65,12 +59,10 @@ function measurePage() {
   const scrollY = window.scrollY;
   heroTop = plating.getBoundingClientRect().top + scrollY;
   heroDistance = Math.max(1, plating.offsetHeight - window.innerHeight);
-  plateWidth = plateCanvas.clientWidth;
   categoryMarker = menuNav.offsetHeight + 32;
   sectionTops = menuSections.map((section) =>
     section.getBoundingClientRect().top + scrollY
   );
-  plating.style.setProperty("--bite-image", "url(" + JSON.stringify(plateImage.currentSrc || plateImage.src) + ")");
   lastProgress = -1;
   needsMeasure = false;
 }
@@ -95,35 +87,17 @@ function updatePlating(scrollY) {
 
   foodLayers.forEach((layer) => {
     const local = clamp((progress - layer.start) / (layer.end - layer.start));
-    const opacity = smooth((local - .48) / .25);
+    const opacity = smooth(local);
     if (opacity === layer.opacity) return;
     layer.opacity = opacity;
     layer.element.style.setProperty("--food-opacity", opacity);
+    layer.element.style.setProperty("--food-y", (1 - opacity) * -22 + "px");
   });
 
   const index = foodLayers.findIndex((layer) => progress < layer.end);
   const current = index === -1 ? foodLayers.length - 1 : index;
-  const layer = foodLayers[current];
-  const local = clamp((progress - layer.start) / (layer.end - layer.start));
-  const approach = smooth(local / .38);
-  const tip = smooth((local - .38) / .25);
-  const retreat = smooth((local - .68) / .32);
-  const travel = 1 - approach + retreat;
-  const opacity = animated && progress >= layer.start && index !== -1
-    ? clamp(local / .08) * (1 - smooth((local - .9) / .1))
-    : 0;
-
-  plating.style.setProperty("--tool-x", (layer.x + travel * .44) * plateWidth + "px");
-  plating.style.setProperty("--tool-y", (layer.y - travel * .38) * plateWidth + "px");
-  plating.style.setProperty("--tool-angle", -12 + tip * 34 - retreat * 22 + "deg");
-  plating.style.setProperty("--tool-opacity", opacity);
-  plating.style.setProperty("--bite-opacity", 1 - smooth((local - .42) / .3));
-  plating.style.setProperty("--bite-scale", 1 - tip * .18);
-  plating.style.setProperty("--finished-opacity", smooth((progress - .94) / .06));
-
   if (current !== lastIngredient) {
     lastIngredient = current;
-    plating.style.setProperty("--bite-position", bitePositions[current]);
     ingredientSteps.forEach((step, stepIndex) => {
       if (stepIndex === current) step.setAttribute("aria-current", "step");
       else step.removeAttribute("aria-current");
