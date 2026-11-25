@@ -17,6 +17,39 @@ if ("IntersectionObserver" in window) {
   }, { threshold: 0.12 });
 
   document.querySelectorAll(
-    ".hero-copy, .hero-photo, .section-head, .dish, .menu-group, .review, .visit-intro"
+    ".section-head, .dish, .menu-group, .review, .visit-intro"
   ).forEach((element) => revealObserver.observe(element));
 }
+
+const categoryLinks = [...document.querySelectorAll(".menu-nav a")];
+const menuSections = categoryLinks.map((link) =>
+  document.getElementById(link.hash.slice(1))
+);
+let categoryFrame;
+
+function updateCategory() {
+  categoryFrame = undefined;
+  const marker = document.querySelector(".menu-nav").getBoundingClientRect().bottom + 32;
+  let currentSection = menuSections[0];
+
+  menuSections.forEach((section) => {
+    if (section.getBoundingClientRect().top <= marker) currentSection = section;
+  });
+
+  categoryLinks.forEach((link) => {
+    if (link.hash === "#" + currentSection.id) {
+      link.setAttribute("aria-current", "location");
+    } else {
+      link.removeAttribute("aria-current");
+    }
+  });
+}
+
+function scheduleCategoryUpdate() {
+  if (categoryFrame !== undefined) return;
+  categoryFrame = requestAnimationFrame(updateCategory);
+}
+
+window.addEventListener("scroll", scheduleCategoryUpdate, { passive: true });
+window.addEventListener("resize", scheduleCategoryUpdate);
+updateCategory();
