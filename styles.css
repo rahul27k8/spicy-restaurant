@@ -209,3 +209,53 @@ footer .brand-mark { color: var(--gold); }
 @media (max-width: 760px) {
   .dish:first-child, .dish:last-child { --entry-x: 0px; --entry-rotate: 0deg; }
 }
+
+.serving { background: #f1e7d6; border-block: 1px solid var(--rule); }
+.serving-sticky { position: relative; display: grid; grid-template-columns: .8fr 1.2fr; gap: 2rem; align-items: center; padding-block: 3rem; }
+.serving-copy { position: relative; z-index: 1; }
+.serving-copy .eyebrow { color: var(--accent); font-size: .68rem; margin-bottom: 1.1rem; }
+.serving-copy h2 { font-size: clamp(3rem, 5vw, 5rem); }
+.serving-copy h2 em { color: var(--accent); }
+.serving-steps { display: grid; margin-block: 1.5rem; }
+.serving-step { grid-area: 1 / 1; opacity: 0; pointer-events: none; max-width: 34ch; color: var(--muted); }
+.serving-step.is-current { opacity: 1; }
+.serving-progress { width: 7rem; height: 3px; margin-bottom: 1.5rem; background: #d5c4aa; overflow: hidden; }
+.serving-progress span { display: block; height: 100%; background: var(--accent); transform-origin: left; transform: scaleX(var(--serve-progress, 1)); }
+.serving-stage { overflow: clip; height: min(70svh, 620px); min-height: 360px; position: relative; isolation: isolate; }
+.serving-glow { position: absolute; inset: 0; background: radial-gradient(ellipse at center, #ffdf9d88, transparent 65%); z-index: -2; }
+.serving-table { position: absolute; inset: 43% -4% 0; border-radius: 50% 50% 10% 10%; background: linear-gradient(170deg, #dcc6a5, #b58c62); box-shadow: inset 0 1px 0 #fff8; z-index: -1; }
+.serving-waiter { display: none; }
+.serving-plate { position: absolute; width: 37%; border-radius: 50%; box-shadow: 0 16px 25px #3d281b36; }
+.serving-main { width: 49%; left: 50%; top: 70%; transform: translate(-50%, -50%); z-index: 3; }
+.serving-kadhi { left: 24%; top: 43%; transform: translate(-50%, -50%); z-index: 2; }
+.serving-rajma { left: 76%; top: 43%; transform: translate(-50%, -50%); z-index: 2; }
+.serving-hint { display: none; }
+@media (min-width: 761px) and (prefers-reduced-motion: no-preference) {
+  .serving-enabled { height: 280svh; }
+  .serving-enabled .serving-sticky { position: sticky; top: 0; min-height: 100svh; padding-block: 2rem; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .serving-enabled .serving-waiter { display: block; position: absolute; height: 92%; width: auto; left: 50%; top: 3%; transform: translateX(calc(-50% + var(--waiter-x, 0px))); opacity: var(--waiter-opacity, 1); z-index: 1; }
+  .serving-enabled .serving-main { width: var(--plate-size); top: var(--plate-y, 42%); transform: translate(calc(-50% + var(--plate-x, 0px)), -50%) perspective(900px) rotateX(var(--plate-angle, 55deg)) scale(var(--plate-scale, .46)); }
+  .serving-enabled .serving-kadhi, .serving-enabled .serving-rajma { width: calc(var(--plate-size) * .72); opacity: var(--sides-opacity, 0); }
+  .serving-enabled .serving-kadhi { transform: translate(calc(-50% - var(--sides-x, 70px)), -50%) rotate(var(--side-tilt, -12deg)); }
+  .serving-enabled .serving-rajma { transform: translate(calc(-50% + var(--sides-x, 70px)), -50%) rotate(calc(-1 * var(--side-tilt, -12deg))); }
+  .serving-enabled .serving-table { opacity: var(--table-opacity, 0); }
+  .serving-enabled .serving-step { transition: opacity .25s ease; }
+  .serving-enabled .serving-hint { display: flex; gap: .65rem; position: absolute; bottom: 1.1rem; left: 0; color: var(--muted); font-size: .8rem; }
+}
+@media (max-width: 760px) {
+  .serving-sticky { grid-template-columns: 1fr; gap: .7rem; padding-block: 2rem; }
+  .serving-copy h2 { font-size: clamp(2.7rem, 10vw, 4rem); }
+  .serving-copy h2 br { display: none; }
+  .serving-copy h2 em::before { content: " "; }
+  .serving-copy .eyebrow { margin-bottom: .6rem; }
+  .serving-steps { margin-block: .8rem; min-height: 3.2em; }
+  .serving-progress { margin-bottom: .7rem; width: 5rem; }
+  .serving-stage { overflow: clip; height: 49svh; min-height: 260px; max-height: 440px; }
+  .serving-hint { left: auto; right: 0; }
+}
+@media (max-width: 760px) and (prefers-reduced-motion: no-preference) {
+  .serving-enabled { height: 240svh; }
+  .serving-enabled .serving-sticky { position: sticky; top: 0; min-height: 100svh; padding-block: 1.4rem 2rem; align-content: center; }
+}
