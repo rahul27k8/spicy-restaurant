@@ -11,7 +11,7 @@
   <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:ital,opsz,wght@0,9..144,650;0,9..144,750;1,9..144,650&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Bricolage+Grotesque:opsz,wght@12..96,650;12..96,750&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
@@ -29,53 +29,56 @@
   </header>
 
   <main id="main">
-    <section class="hero">
-      <div class="wrap hero-grid">
+    <section class="hero plating-hero" aria-labelledby="hero-title">
+      <div class="wrap plating-sticky">
         <div class="hero-copy">
-          <p class="eyebrow"><span aria-hidden="true">✦</span> A VEGETARIAN RESTAURANT NEAR BANIKHET</p>
-          <h1><span class="headline-line"><span>Comfort food</span></span><span class="headline-line"><span>on the road to</span></span><span class="headline-line"><em>Dalhousie.</em></span></h1>
-          <p class="intro">Stop near Banikhet for kadhi chawal, rajma chawal, or a thali with both.</p>
+          <p class="eyebrow">SPICY FOOD POINT · DUNDIARA</p>
+          <h1 id="hero-title">A little stop.<br>A <em>full plate.</em></h1>
+          <p class="intro">Kadhi, rajma and a little mountain-road appetite. Pull up a chair on your way to Dalhousie.</p>
           <div class="actions">
-            <a class="button button-primary" href="#menu">View the menu <span aria-hidden="true">↓</span></a>
-            <a class="text-link" href="#visit">Plan your stop <span aria-hidden="true">↓</span></a>
+            <a class="button button-primary" href="#menu">Find your favourite <span aria-hidden="true">↓</span></a>
+            <a class="text-link" href="#visit">Get directions <span aria-hidden="true">↗</span></a>
           </div>
+          <p class="hero-practical">Pure vegetarian · Near Banikhet<br>Open every day, 7 am–9 pm</p>
         </div>
-        <figure class="hero-photo">
-          <img src="./assets/storefront.jpg" alt="Spicy Food Point’s illuminated roadside sign and entrance in Dundiara" width="1126" height="1126" fetchpriority="high">
-          <figcaption>Spicy Food Point <span>Dundiara, near Banikhet</span></figcaption>
-        </figure>
+        <div class="plating-visual">
+          <div class="plate-canvas" role="img" aria-label="A round House Thali fills with rice, kadhi, rajma, two rotis, and onion and green chilli salad as you scroll.">
+            <img class="plate-base" src="./assets/empty-thali.jpg" alt="" width="1000" height="1000">
+            <img class="food-layer layer-rice" data-start="0.02" data-end="0.24" src="./assets/house-thali.jpg" alt="" width="1000" height="1000">
+            <img class="food-layer layer-kadhi" data-start="0.19" data-end="0.41" src="./assets/house-thali.jpg" alt="" width="1000" height="1000">
+            <img class="food-layer layer-rajma" data-start="0.36" data-end="0.58" src="./assets/house-thali.jpg" alt="" width="1000" height="1000">
+            <img class="food-layer layer-roti" data-start="0.53" data-end="0.75" src="./assets/house-thali.jpg" alt="" width="1000" height="1000">
+            <img class="food-layer layer-salad" data-start="0.70" data-end="0.92" src="./assets/house-thali.jpg" alt="" width="1000" height="1000">
+            <img class="plate-finished" src="./assets/house-thali.jpg" alt="" width="1000" height="1000" fetchpriority="high">
+          </div>
+          <ol class="plating-steps" aria-label="House Thali ingredients">
+            <li>Rice</li><li>Kadhi</li><li>Rajma</li><li>Two rotis</li><li>Onion &amp; chilli</li>
+          </ol>
+          <p class="plating-hint">Scroll to fill your thali <span aria-hidden="true">↓</span></p>
+          <p class="plating-note">Illustrative food imagery</p>
+        </div>
       </div>
     </section>
 
-    <section class="serving" aria-labelledby="serving-title">
-      <div class="serving-sticky wrap">
-        <div class="serving-copy">
-          <p class="eyebrow">FROM OUR KITCHEN TO YOUR TABLE</p>
-          <h2 id="serving-title">Let us<br><em>serve you.</em></h2>
-          <div class="serving-steps">
-            <p class="serving-step" aria-hidden="true">A warm welcome.<br>Your thali is on its way.</p>
-            <p class="serving-step" aria-hidden="true">Kadhi, rajma, rice and two rotis.<br>Served with onion and green chilli.</p>
-            <p class="serving-step is-current">House Thali, Kadhi Chawal or Rajma Chawal.<br>Which one will it be?</p>
-          </div>
-          <div class="serving-progress" aria-hidden="true"><span></span></div>
-          <a class="text-link" href="#menu">View the menu <span aria-hidden="true">↓</span></a>
+    <section class="section story" aria-labelledby="story-title">
+      <div class="wrap story-grid">
+        <div>
+          <p class="eyebrow">YOUR STOP NEAR BANIKHET</p>
+          <h2 id="story-title">Come for the road.<br>Stay for the <em>rajma.</em></h2>
+          <p>A plate of familiar favourites, on the Pathankot–Dalhousie road. Find Spicy Food Point in Dundiara, about 8 km before Banikhet when travelling from Nainikhud.</p>
+          <a class="text-link" href="#visit">Plan your stop <span aria-hidden="true">↗</span></a>
         </div>
-        <div class="serving-stage" role="img" aria-label="An illustrated waiter brings a four-section House Thali to the table, followed by Kadhi Chawal and Rajma Chawal.">
-          <div class="serving-glow"></div>
-          <div class="serving-table"></div>
-          <img class="serving-waiter" src="./assets/waiter.png" alt="" width="800" height="1200" loading="lazy">
-          <img class="serving-plate serving-main" src="./assets/house-thali.jpg" alt="" width="1000" height="1000" loading="lazy">
-          <img class="serving-plate serving-kadhi" src="./assets/kadhi-rice.jpg" alt="" width="886" height="886" loading="lazy">
-          <img class="serving-plate serving-rajma" src="./assets/rajma-rice.jpg" alt="" width="887" height="887" loading="lazy">
-        </div>
-        <p class="serving-hint">Scroll to be served <span aria-hidden="true">↓</span></p>
+        <figure class="story-photo">
+          <img src="./assets/storefront.jpg" alt="The illuminated Spicy Food Point sign above the restaurant entrance in Dundiara" width="1126" height="1126" loading="lazy">
+          <figcaption>Look for the Spicy Food Point sign.</figcaption>
+        </figure>
       </div>
     </section>
 
     <section class="section menu" id="menu" aria-labelledby="menu-title">
       <div class="wrap">
         <div class="section-head">
-          <div><p class="eyebrow"><span aria-hidden="true">✦</span> PURE VEGETARIAN</p><h2 id="menu-title">Our menu</h2></div>
+          <div><p class="eyebrow"><span aria-hidden="true">✦</span> PURE VEGETARIAN</p><h2 id="menu-title">What are you<br><em>craving?</em></h2></div>
         </div>
         <nav class="menu-nav" aria-label="Menu categories">
           <a href="#specialities">House Favourites</a>
