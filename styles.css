@@ -155,7 +155,7 @@ h1 em, h2 em { font-style: normal; }
 h2 em { color: var(--accent); }
 .plating-hero { position: relative; }
 .plating-sticky { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); align-items: center; gap: clamp(1rem, 4vw, 4rem); min-height: 90svh; padding-block: 3rem; }
-.plating-hero .plating-title { font-size: clamp(3.4rem, 6.9vw, 7rem); line-height: .98; letter-spacing: -.065em; }
+.plating-hero .plating-title { font-size: clamp(2.6rem, min(5vw, 8svh), 5rem); line-height: .98; letter-spacing: -.065em; }
 .plating-hero .eyebrow { font-size: .72rem; }
 .hero-practical { margin-top: 1.6rem; color: #d8d7c6; font-size: .85rem; line-height: 1.8; }
 .plating-visual { min-width: 0; position: relative; overflow: clip; padding-top: 1rem; }
@@ -264,4 +264,13 @@ h2 em { color: var(--accent); }
   .menu-featured, .menu-group, #mixed-plate { scroll-margin-top: 6rem; }
   .nav nav a { min-height: 44px; display: inline-flex; align-items: center; }
   .visit-details dd { overflow-wrap: anywhere; }
+}
+
+/* Fit the complete desktop scene inside shorter laptop windows. */
+@media (min-width: 761px) and (max-height: 740px) {
+  .plating-sticky { padding-block: 1.25rem; }
+  .plate-canvas { width: min(100%, 54svh); }
+  .plating-hero .hero-practical { display: none; }
+  .plating-hero .actions { margin-top: 1.25rem; }
+  .plating-steps { margin-top: .75rem; }
 }

@@ -1,5 +1,5 @@
 const motionPreference = window.matchMedia("(prefers-reduced-motion: reduce)");
-const compactViewport = window.matchMedia("(max-height: 560px)");
+const compactViewport = window.matchMedia("(max-width: 760px) and (max-height: 480px)");
 const connection = navigator.connection;
 
 if ("IntersectionObserver" in window) {
