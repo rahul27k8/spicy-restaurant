@@ -250,11 +250,7 @@ h2 em { color: var(--accent); }
   .specialty-rajma { animation: signature-arrive .75s .2s both; }
 }
 @media (max-width: 760px) {
-  .specialty-showcase { grid-template-columns: repeat(2, minmax(0, 1fr)); width: min(100%, 500px); gap: 1rem; padding-block: .5rem; }
-  .specialty-kadhi { grid-column: 1; }
-  .specialty-rajma { grid-column: 2; margin-top: 1.5rem; }
-  .specialty-kadhi figcaption { order: 0; padding-left: 0; }
-  .specialty-rajma figcaption { padding-right: 0; }
+  .specialty-showcase { width: min(100%, 500px); padding-block: .5rem; }
   .specialty-note { font-size: .6rem; margin-top: .5rem; }
 }
 
