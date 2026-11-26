@@ -154,7 +154,7 @@ footer .brand-mark { color: var(--gold); }
 h1 em, h2 em { font-style: normal; }
 h2 em { color: var(--accent); }
 .plating-hero { position: relative; }
-.plating-sticky { display: grid; grid-template-columns: .9fr 1.1fr; align-items: center; gap: clamp(1rem, 4vw, 4rem); min-height: 90svh; padding-block: 3rem; }
+.plating-sticky { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); align-items: center; gap: clamp(1rem, 4vw, 4rem); min-height: 90svh; padding-block: 3rem; }
 .plating-hero .plating-title { font-size: clamp(3.4rem, 6.9vw, 7rem); line-height: .98; letter-spacing: -.065em; }
 .plating-hero .eyebrow { font-size: .72rem; }
 .hero-practical { margin-top: 1.6rem; color: #d8d7c6; font-size: .85rem; line-height: 1.8; }
@@ -195,11 +195,12 @@ h2 em { color: var(--accent); }
 }
 @media (max-width: 760px) {
   .plating-sticky { grid-template-columns: 1fr; gap: 1.6rem; padding-block: 2rem; }
-  .plating-hero .plating-title { font-size: clamp(2.8rem, 11vw, 4.7rem); margin-top: .8rem; }
-  .plating-hero .intro { font-size: .96rem; max-width: 40ch; }
+  .plating-hero .plating-title { font-size: clamp(1.9rem, 7vw, 2.6rem); margin-block: .5rem .75rem; }
+  .plating-hero .intro { font-size: .875rem; line-height: 1.45; max-width: 44ch; }
+  .plating-hero .actions, .plating-hero .hero-practical { display: none; }
   .plating-hero .actions { margin-top: 1rem; gap: 1rem; }
   .hero-practical { margin-top: .8rem; font-size: .76rem; line-height: 1.5; }
-  .plate-canvas { width: min(82%, 36svh); }
+  .plate-canvas { width: min(72%, 30svh); }
   .plating-steps { margin-top: .75rem; gap: .3rem; }
   .plating-steps li { font-size: .65rem; padding: .25rem .45rem; }
   .plating-note { margin-top: .5rem; }
@@ -208,7 +209,7 @@ h2 em { color: var(--accent); }
 }
 @media (max-width: 760px) and (prefers-reduced-motion: no-preference) {
   .plating-motion { height: 270svh; }
-  .plating-motion .plating-sticky { gap: .8rem; padding-block: 1.25rem; align-content: center; }
+  .plating-motion .plating-sticky { gap: .65rem; padding-block: 1rem; align-content: center; }
 }
 
 /* Signature rice plates introduce the food before the thali reveal. */
@@ -258,3 +259,13 @@ h2 em { color: var(--accent); }
 }
 
 .image-filters { position: absolute; width: 0; height: 0; overflow: hidden; pointer-events: none; }
+
+/* Keep narrow layouts within their tracks and the menu controls in one row. */
+.home-hero-grid > *, .plating-sticky > *, .visit-grid > *, .story-grid > * { min-width: 0; }
+@media (max-width: 760px) {
+  .menu-nav { flex-wrap: nowrap; overflow-x: auto; gap: .5rem; scrollbar-width: thin; overscroll-behavior-x: contain; }
+  .menu-nav a { flex: 0 0 auto; font-size: .85rem; }
+  .menu-featured, .menu-group, #mixed-plate { scroll-margin-top: 6rem; }
+  .nav nav a { min-height: 44px; display: inline-flex; align-items: center; }
+  .visit-details dd { overflow-wrap: anywhere; }
+}

@@ -28,6 +28,7 @@ const menuSections = categoryLinks.map((link) =>
 );
 const menuNav = document.querySelector(".menu-nav");
 const plating = document.querySelector(".plating-hero");
+const platingContent = plating?.querySelector(".plating-sticky");
 const foodLayers = [...(plating?.querySelectorAll(".food-layer") ?? [])].map((element) => ({
   element,
   start: Number(element.dataset.start),
@@ -56,6 +57,11 @@ const smooth = (value) => {
 function measurePage() {
   animated = !motionPreference.matches && !compactViewport.matches && !connection?.saveData;
   plating?.classList.toggle("plating-motion", animated);
+  // A pinned scene must fit in the visible screen, including enlarged text.
+  if (animated && platingContent && platingContent.getBoundingClientRect().height > window.innerHeight + 2) {
+    animated = false;
+    plating.classList.remove("plating-motion");
+  }
   const scrollY = window.scrollY;
   heroTop = plating ? plating.getBoundingClientRect().top + scrollY : 0;
   heroDistance = plating ? Math.max(1, plating.offsetHeight - window.innerHeight) : 1;
