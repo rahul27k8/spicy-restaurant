@@ -274,3 +274,7 @@ h2 em { color: var(--accent); }
   .plating-hero .actions { margin-top: 1.25rem; }
   .plating-steps { margin-top: .75rem; }
 }
+
+/* Keep footer controls clear of the hosting badge and phone safe areas. */
+footer { padding-bottom: calc(5.5rem + env(safe-area-inset-bottom, 0px)); }
+.footer-inner > a:last-child { display: inline-flex; align-items: center; min-height: 44px; }
