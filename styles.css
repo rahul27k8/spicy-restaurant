@@ -233,7 +233,7 @@ h2 em { color: var(--accent); }
 .specialty-plate { grid-row: 1; min-width: 0; display: flex; flex-direction: column; gap: .85rem; }
 .specialty-kadhi { grid-column: 1 / 8; }
 .specialty-rajma { grid-column: 6 / -1; margin-top: 55%; }
-.specialty-plate img { width: 100%; aspect-ratio: 1; object-fit: contain; filter: drop-shadow(0 0 1px var(--gold)) drop-shadow(0 12px 14px #07150d40); }
+.specialty-plate img { width: 100%; aspect-ratio: 1; object-fit: contain; filter: url(#plate-outline) drop-shadow(0 14px 18px #07150d50); }
 .specialty-plate figcaption { width: fit-content; line-height: 1.2; }
 .specialty-kadhi figcaption { order: -1; padding-left: .65rem; }
 .specialty-rajma figcaption { align-self: flex-end; text-align: right; padding-right: .65rem; }
@@ -256,3 +256,5 @@ h2 em { color: var(--accent); }
   .specialty-rajma figcaption { padding-right: 0; }
   .specialty-note { font-size: .6rem; margin-top: .5rem; }
 }
+
+.image-filters { position: absolute; width: 0; height: 0; overflow: hidden; pointer-events: none; }
