@@ -1,3 +1,19 @@
+// Browser refresh starts at the clean homepage; section clicks remain native links.
+const navigationEntry = window.performance?.getEntriesByType?.("navigation")[0];
+if (navigationEntry?.type === "reload") {
+  const previousRestoration = window.history.scrollRestoration;
+  window.history.scrollRestoration = "manual";
+  if (window.location.hash) {
+    window.history.replaceState(window.history.state, "", window.location.pathname + window.location.search);
+  }
+  const resetScroll = () => window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+  resetScroll();
+  window.addEventListener("load", () => {
+    resetScroll();
+    requestAnimationFrame(() => { window.history.scrollRestoration = previousRestoration; });
+  }, { once: true });
+}
+
 const motionPreference = window.matchMedia("(prefers-reduced-motion: reduce)");
 const compactViewport = window.matchMedia("(max-width: 760px) and (max-height: 480px)");
 const connection = navigator.connection;
