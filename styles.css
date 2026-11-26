@@ -278,3 +278,20 @@ h2 em { color: var(--accent); }
 /* Keep footer controls clear of the hosting badge and phone safe areas. */
 footer { padding-bottom: calc(5.5rem + env(safe-area-inset-bottom, 0px)); }
 .footer-inner > a:last-child { display: inline-flex; align-items: center; min-height: 44px; }
+
+/* Centre the mobile presentation while keeping reading-heavy lists aligned. */
+@media (max-width: 760px) {
+  .home-hero .hero-copy, .plating-hero .hero-copy, .story-grid > div, .visit-intro { text-align: center; }
+  .hero .eyebrow, .section-head .eyebrow, .story .eyebrow, .visit .eyebrow { justify-content: center; }
+  .hero .intro, .story p:not(.eyebrow), .visit-intro > p { margin-inline: auto; }
+  .actions { justify-content: center; }
+  .section-head { justify-content: center; text-align: center; }
+  .section-head > div { width: 100%; }
+  .menu-featured > h3, .menu-group > h3 { text-align: center; }
+  .dish-name { text-align: center; }
+  .dish-heading { justify-content: center; }
+  .specialty-plate figcaption { align-self: center; padding-inline: 0; text-align: center; }
+  .review .stars, .review figcaption { text-align: center; }
+  .visit-grid { grid-template-columns: 1fr; }
+  .footer-inner { flex-direction: column; justify-content: center; text-align: center; }
+}

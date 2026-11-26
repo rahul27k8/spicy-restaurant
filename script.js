@@ -1,4 +1,4 @@
-// Browser refresh starts at the clean homepage; section clicks remain native links.
+// Browser refresh starts at the clean homepage.
 const navigationEntry = window.performance?.getEntriesByType?.("navigation")[0];
 if (navigationEntry?.type === "reload") {
   const previousRestoration = window.history.scrollRestoration;
@@ -17,6 +17,32 @@ if (navigationEntry?.type === "reload") {
 const motionPreference = window.matchMedia("(prefers-reduced-motion: reduce)");
 const compactViewport = window.matchMedia("(max-width: 760px) and (max-height: 480px)");
 const connection = navigator.connection;
+
+function handleSectionNavigation(event) {
+  if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+  const link = event.target.closest?.('a[href^="#"]');
+  if (!link || link.hasAttribute("download") || (link.target && link.target !== "_self")) return;
+
+  let id;
+  try { id = decodeURIComponent(link.getAttribute("href").slice(1)); }
+  catch { return; }
+  const target = id && document.getElementById(id);
+  if (!target) return;
+
+  event.preventDefault();
+  if (window.location.hash) {
+    window.history.replaceState(window.history.state, "", window.location.pathname + window.location.search);
+  }
+  target.scrollIntoView({ behavior: motionPreference.matches ? "instant" : "smooth", block: "start" });
+
+  // Preserve keyboard navigation and the skip link without adding a URL fragment.
+  if (event.detail === 0 || link.classList.contains("skip")) {
+    if (!target.hasAttribute("tabindex")) target.setAttribute("tabindex", "-1");
+    target.focus({ preventScroll: true });
+  }
+}
+document.addEventListener("click", handleSectionNavigation);
+
 
 if ("IntersectionObserver" in window) {
   const revealObserver = new IntersectionObserver((entries, observer) => {

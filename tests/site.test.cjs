@@ -6,7 +6,7 @@ const vm=require('node:vm');
 const root=path.resolve(__dirname,'..');
 const source=fs.readFileSync(path.join(root,'script.js'),'utf8');
 function page({reduced=false,compact=false,saveData=false,contentHeight=600,navigationType="navigate",hash="",initialScroll=0}={}) {
-  const events={},media=[],frames=[];let layoutReads=0,writes=0,enabled=false;
+  const events={},docEvents={},targets=new Map(),media=[],frames=[];let layoutReads=0,writes=0,enabled=false;
   const element=()=>({attrs:{},style:{values:{},setProperty(k,v){this.values[k]=v;writes++;}},setAttribute(k,v){this.attrs[k]=v;},removeAttribute(k){delete this.attrs[k];}});
   const layers=[[.01,.195],[.195,.38],[.38,.565],[.565,.75],[.75,.935]].map(([start,end])=>Object.assign(element(),{dataset:{start,end}}));
   const steps=layers.map(element);
@@ -20,10 +20,14 @@ function page({reduced=false,compact=false,saveData=false,contentHeight=600,navi
     scrollTo({top}){this.scrollY=top;},
     matchMedia(q){const m={matches:q.includes('reduce')?reduced:compact,addEventListener(k,f){this.change=f;}};media.push(m);return m;},addEventListener(k,f,options){const previous=events[k];events[k]=previous?()=>{previous();f();}:f;if(k==='scroll')assert.equal(options.passive,true);}};
   const connection={saveData,addEventListener(){}};
-  const document={querySelectorAll(){return links;},querySelector(s){return s==='.menu-nav'?nav:hero;},getElementById(id){const i=Number(id.split('-').pop());return{getBoundingClientRect(){layoutReads++;return{top:3000+i*600-window.scrollY};}};}};
+  const document={addEventListener(k,f){docEvents[k]=f;},querySelectorAll(){return links;},querySelector(s){return s==='.menu-nav'?nav:hero;},getElementById(id){
+    if(!id.startsWith('category-')&&!['main','menu','our-thali','reviews','visit','top'].includes(id))return null;
+    if(!targets.has(id)){const i=Number(id.split('-').pop());const target=Object.assign(element(),{hasAttribute(k){return k in this.attrs;},scrollIntoView(options){this.scrollOptions=options;},focus(options){this.focusOptions=options;},getBoundingClientRect(){layoutReads++;return{top:3000+i*600-window.scrollY};}});targets.set(id,target);}
+    return targets.get(id);
+  }};
   vm.runInNewContext(source,{window,document,navigator:{connection},requestAnimationFrame(f){frames.push(f);return frames.length;}});
   const flush=()=>{while(frames.length)frames.shift()();};
-  return {window,nav,links,layers,media,events,flush,scroll(y){window.scrollY=y;events.scroll();flush();},values:()=>layers.map(l=>l.style.values['--food-opacity']),get reads(){return layoutReads;},get writes(){return writes;},get animated(){return enabled;}};
+  return {window,document,docEvents,nav,links,layers,media,events,flush,scroll(y){window.scrollY=y;events.scroll();flush();},values:()=>layers.map(l=>l.style.values['--food-opacity']),get reads(){return layoutReads;},get writes(){return writes;},get animated(){return enabled;}};
 }
 test('thali starts at its actual position and reverses correctly',()=>{const p=page();assert(p.animated);assert.deepEqual(p.values(),[0,0,0,0,0]);p.scroll(920);assert(p.values()[0]>0&&p.values()[0]<1);assert.deepEqual(p.values().slice(1),[0,0,0,0]);p.scroll(2000);assert.deepEqual(p.values(),[1,1,1,1,1]);p.scroll(0);assert.deepEqual(p.values(),[0,0,0,0,0]);});
 test('steady scrolling avoids layout measurements and repeated offscreen writes',()=>{const p=page(),reads=p.reads;p.scroll(2000);const writes=p.writes;p.scroll(2100);assert.equal(p.writes,writes);assert.equal(p.reads,reads);});
@@ -37,5 +41,17 @@ test('both logos navigate to the clean homepage rather than a fragment',()=>{con
 test('contact links use the intended location and phone number',()=>{const html=fs.readFileSync(path.join(root,'index.html'),'utf8');const links=[...html.matchAll(/<a[^>]+href="([^"]+)"/g)].map(m=>m[1].replaceAll('&amp;','&'));const directions=links.filter(h=>h.includes('/maps/dir/'));assert.equal(directions.length,2);for(const h of directions){const u=new URL(h);assert.equal(u.searchParams.get('destination'),'32.508229,75.9344517');}assert.equal(links.filter(h=>h==='tel:+919816161282').length,2);assert.equal(links.filter(h=>h==='https://www.google.com/maps?cid=849003724971903692').length,2);});
 
 test('browser reload clears the section fragment and returns to the homepage',()=>{const p=page({navigationType:'reload',hash:'#menu',initialScroll:4000});assert.equal(p.window.location.hash,'');assert.equal(p.window.history.replacedURL,'/?lang=en');assert.equal(p.window.scrollY,0);assert.equal(p.window.history.scrollRestoration,'manual');p.window.scrollY=500;p.events.load();p.flush();assert.equal(p.window.scrollY,0);assert.equal(p.window.history.scrollRestoration,'auto');assert.equal(p.window.history.state.keep,true);});
-test('normal section navigation retains its fragment and browser scroll handling',()=>{const p=page({hash:'#menu',initialScroll:4000});assert.equal(p.window.location.hash,'#menu');assert.equal(p.window.history.replacedURL,undefined);assert.equal(p.window.scrollY,4000);assert.equal(p.window.history.scrollRestoration,'auto');});
+test('initial deep links retain their fragment until clicked or refreshed',()=>{const p=page({hash:'#menu',initialScroll:4000});assert.equal(p.window.location.hash,'#menu');assert.equal(p.window.history.replacedURL,undefined);assert.equal(p.window.scrollY,4000);assert.equal(p.window.history.scrollRestoration,'auto');});
 test('reloading a clean URL also starts at the top',()=>{const p=page({navigationType:'reload',initialScroll:4000});assert.equal(p.window.scrollY,0);assert.equal(p.window.history.replacedURL,undefined);});
+
+function sectionClick(p,{href='#menu',detail=1,modified=false,skip=false,targetWindow='',download=false}={}){
+  const link={target:targetWindow,getAttribute(){return href;},hasAttribute(){return download;},classList:{contains(){return skip;}}};
+  const event={button:0,detail,ctrlKey:modified,defaultPrevented:false,target:{closest(){return link;}},preventDefault(){this.defaultPrevented=true;}};
+  p.docEvents.click(event);return event;
+}
+test('section buttons scroll smoothly without adding URL fragments',()=>{const p=page();const event=sectionClick(p);assert(event.defaultPrevented);assert.equal(p.window.location.hash,'');assert.equal(p.window.history.replacedURL,undefined);assert.equal(p.document.getElementById('menu').scrollOptions.behavior,'smooth');});
+test('section clicks remove a pre-existing fragment and preserve query parameters',()=>{const p=page({hash:'#reviews'});sectionClick(p);assert.equal(p.window.location.hash,'');assert.equal(p.window.history.replacedURL,'/?lang=en');});
+test('keyboard navigation focuses the section without scrolling focus again',()=>{const p=page();sectionClick(p,{detail:0});const target=p.document.getElementById('menu');assert.equal(target.attrs.tabindex,'-1');assert.equal(target.focusOptions.preventScroll,true);});
+test('reduced-motion section navigation is instant and skip navigation focuses main',()=>{const p=page({reduced:true});sectionClick(p,{href:'#main',skip:true});const target=p.document.getElementById('main');assert.equal(target.scrollOptions.behavior,'instant');assert.equal(target.focusOptions.preventScroll,true);});
+test('modified clicks, downloads and new-window links retain native behaviour',()=>{for(const options of [{modified:true},{download:true},{targetWindow:'_blank'}]){const p=page();assert.equal(sectionClick(p,options).defaultPrevented,false);}});
+test('invalid or missing fragment targets are not intercepted',()=>{for(const href of ['#missing','#%invalid','#']){const p=page();assert.equal(sectionClick(p,{href}).defaultPrevented,false);}});
