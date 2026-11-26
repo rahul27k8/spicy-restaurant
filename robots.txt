@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://spicy-banikhet.netlify.app/sitemap.xml

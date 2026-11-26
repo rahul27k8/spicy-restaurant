@@ -1,21 +1,42 @@
 # Spicy Food Point
 
-A static website for Spicy Food Point near Banikhet, Himachal Pradesh. The site highlights kadhi rice and rajma rice and links visitors to the restaurant’s location, phone, and Google Maps listing.
+A buildless HTML, CSS, and JavaScript website for Spicy Food Point in Dundiara, near Banikhet, Himachal Pradesh.
 
-## Preview locally
+Live website: https://spicy-banikhet.netlify.app/
+
+## Local preview
 
 ```sh
 python3 -m http.server 8765
 ```
 
-Open http://localhost:8765. The site uses plain HTML and CSS and has no build step.
+Open http://localhost:8765. No dependency installation or build step is required.
 
-## GitHub Pages
+## Regression checks
 
-In the repository’s **Settings → Pages**, choose **Deploy from a branch** and publish from **main / (root)**. Future pushes to `main` update the site.
+Use Node.js 22 or later:
+
+```sh
+node --test tests/site.test.cjs
+```
+
+The checks cover animation progress and reversal, reduced-motion and data-saving fallbacks, short-screen fallback, preference changes, scroll scheduling, active menu visibility, and local links. See `docs/QA-2026-11-26.md` for the browser audit and its limits.
+
+## Netlify publication
+
+The site is published manually using the linked Netlify CLI. A GitHub push alone does not publish it. Publish only the site files, not this entire checkout:
+
+```sh
+publish_dir=$(mktemp -d)
+git archive HEAD index.html our-thali.html styles.css script.js robots.txt sitemap.xml assets | tar -x -C "$publish_dir"
+netlify deploy --prod --no-build --dir "$publish_dir"
+```
+
+Keep `.netlify/` out of version control. When the public domain changes, update the canonical URL, social metadata, robots.txt, sitemap.xml, and legacy redirect canonical together.
 
 ## Content sources
 
-- The [Google Maps listing](https://www.google.com/maps?cid=849003724971903692) supplies the address, business hours, phone number, and attributed five-star review excerpts.
-- The kadhi rice and rajma rice images were generated with ImageGen and are labeled as illustrations on the site. Replace the two JPEGs and the image labels if current restaurant photos become available.
-- The storefront photo was supplied by the restaurant. Menu items were transcribed from its printed menu.
+- Google Maps supplies the restaurant location, phone link, and attributed review excerpts.
+- The owner confirmed opening hours of 7 AM–9 PM every day and supplied the storefront photo and printed menu.
+- Dish images are AI-generated illustrations and are labelled on the website. Transparent hero cutouts are served as responsive WebP assets; the original source images are retained.
+- Prices remain omitted at the owner's request.

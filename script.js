@@ -84,6 +84,17 @@ function updateCategory(scrollY) {
     if (index === current) link.setAttribute("aria-current", "location");
     else link.removeAttribute("aria-current");
   });
+
+  // Follow the active tab horizontally without scrolling the page or moving focus.
+  const activeLink = categoryLinks[current];
+  if (menuNav && activeLink && menuNav.scrollWidth > menuNav.clientWidth) {
+    const left = activeLink.offsetLeft;
+    const right = left + activeLink.offsetWidth;
+    if (left < menuNav.scrollLeft) menuNav.scrollLeft = left;
+    else if (right > menuNav.scrollLeft + menuNav.clientWidth) {
+      menuNav.scrollLeft = right - menuNav.clientWidth;
+    }
+  }
 }
 
 function updatePlating(scrollY) {
