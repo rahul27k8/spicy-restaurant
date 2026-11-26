@@ -20,11 +20,20 @@ const connection = navigator.connection;
 
 function handleSectionNavigation(event) {
   if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
-  const link = event.target.closest?.('a[href^="#"]');
+  const link = event.target.closest?.("a");
   if (!link || link.hasAttribute("download") || (link.target && link.target !== "_self")) return;
 
+  const href = link.getAttribute("href") || "";
+  if (link.classList.contains("brand") && href === "/") {
+    event.preventDefault();
+    window.history.replaceState(window.history.state, "", "/");
+    window.location.reload();
+    return;
+  }
+  if (!href.startsWith("#")) return;
+
   let id;
-  try { id = decodeURIComponent(link.getAttribute("href").slice(1)); }
+  try { id = decodeURIComponent(href.slice(1)); }
   catch { return; }
   const target = id && document.getElementById(id);
   if (!target) return;

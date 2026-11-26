@@ -15,7 +15,7 @@ function page({reduced=false,compact=false,saveData=false,contentHeight=600,navi
   const hero={offsetHeight:1800,classList:{toggle(k,v){enabled=v;},remove(){enabled=false;}},getBoundingClientRect(){layoutReads++;return{top:800-window.scrollY};},querySelector(){return{getBoundingClientRect(){layoutReads++;return{height:contentHeight};}};},querySelectorAll(s){return s==='.food-layer'?layers:steps;}};
   const window={scrollY:initialScroll,innerHeight:600,
     performance:{getEntriesByType(){return [{type:navigationType}];}},
-    location:{hash,pathname:'/',search:'?lang=en'},
+    location:{hash,pathname:'/',search:'?lang=en',reload(){this.reloadCount=(this.reloadCount||0)+1;}},
     history:{state:{keep:true},scrollRestoration:'auto',replaceState(state,title,url){this.replacedURL=url;this.state=state;window.location.hash='';}},
     scrollTo({top}){this.scrollY=top;},
     matchMedia(q){const m={matches:q.includes('reduce')?reduced:compact,addEventListener(k,f){this.change=f;}};media.push(m);return m;},addEventListener(k,f,options){const previous=events[k];events[k]=previous?()=>{previous();f();}:f;if(k==='scroll')assert.equal(options.passive,true);}};
@@ -44,8 +44,8 @@ test('browser reload clears the section fragment and returns to the homepage',()
 test('initial deep links retain their fragment until clicked or refreshed',()=>{const p=page({hash:'#menu',initialScroll:4000});assert.equal(p.window.location.hash,'#menu');assert.equal(p.window.history.replacedURL,undefined);assert.equal(p.window.scrollY,4000);assert.equal(p.window.history.scrollRestoration,'auto');});
 test('reloading a clean URL also starts at the top',()=>{const p=page({navigationType:'reload',initialScroll:4000});assert.equal(p.window.scrollY,0);assert.equal(p.window.history.replacedURL,undefined);});
 
-function sectionClick(p,{href='#menu',detail=1,modified=false,skip=false,targetWindow='',download=false}={}){
-  const link={target:targetWindow,getAttribute(){return href;},hasAttribute(){return download;},classList:{contains(){return skip;}}};
+function sectionClick(p,{href='#menu',detail=1,modified=false,skip=false,brand=false,targetWindow='',download=false}={}){
+  const link={target:targetWindow,getAttribute(){return href;},hasAttribute(){return download;},classList:{contains(name){return name==='brand'?brand:name==='skip'?skip:false;}}};
   const event={button:0,detail,ctrlKey:modified,defaultPrevented:false,target:{closest(){return link;}},preventDefault(){this.defaultPrevented=true;}};
   p.docEvents.click(event);return event;
 }
@@ -55,3 +55,5 @@ test('keyboard navigation focuses the section without scrolling focus again',()=
 test('reduced-motion section navigation is instant and skip navigation focuses main',()=>{const p=page({reduced:true});sectionClick(p,{href:'#main',skip:true});const target=p.document.getElementById('main');assert.equal(target.scrollOptions.behavior,'instant');assert.equal(target.focusOptions.preventScroll,true);});
 test('modified clicks, downloads and new-window links retain native behaviour',()=>{for(const options of [{modified:true},{download:true},{targetWindow:'_blank'}]){const p=page();assert.equal(sectionClick(p,options).defaultPrevented,false);}});
 test('invalid or missing fragment targets are not intercepted',()=>{for(const href of ['#missing','#%invalid','#']){const p=page();assert.equal(sectionClick(p,{href}).defaultPrevented,false);}});
+
+test('logo clicks explicitly reload the clean homepage even without a fragment',()=>{for(const hash of ['', '#menu']){const p=page({hash,initialScroll:3000});const event=sectionClick(p,{href:'/',brand:true});assert(event.defaultPrevented);assert.equal(p.window.history.replacedURL,'/');assert.equal(p.window.location.reloadCount,1);}});
