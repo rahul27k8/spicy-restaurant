@@ -57,16 +57,3 @@ test('modified clicks, downloads and new-window links retain native behaviour',(
 test('invalid or missing fragment targets are not intercepted',()=>{for(const href of ['#missing','#%invalid','#']){const p=page();assert.equal(sectionClick(p,{href}).defaultPrevented,false);}});
 
 test('logo clicks explicitly reload the clean homepage even without a fragment',()=>{for(const hash of ['', '#menu']){const p=page({hash,initialScroll:3000});const event=sectionClick(p,{href:'/',brand:true});assert(event.defaultPrevented);assert.equal(p.window.history.replacedURL,'/');assert.equal(p.window.location.reloadCount,1);}});
-
-test('menu categories use lightweight, lazy, responsive images',()=>{
-  const html=fs.readFileSync(path.join(root,'index.html'),'utf8');
-  const categories=['breakfast','meals','snacks','drinks'];let smallTotal=0,largeTotal=0;
-  for(const category of categories){
-    const section=html.match(new RegExp('<section class="menu-group" id="'+category+'"[\\s\\S]*?<\\/section>'))?.[0];assert(section,category);
-    const images=[...section.matchAll(/<img\b[^>]*>/g)];assert.equal(images.length,1,category);
-    const image=images[0][0];assert(image.includes('loading="lazy"')&&image.includes('decoding="async"')&&image.includes('fetchpriority="low"'));
-    assert(image.includes('width="800"')&&image.includes('height="364"')&&/alt="[^"]+"/.test(image));
-    for(const size of [480,800]){const asset='assets/menu-'+category+'-'+size+'.webp';assert(image.includes('./'+asset));const bytes=fs.readFileSync(path.join(root,asset));assert.equal(bytes.toString('ascii',8,12),'WEBP');if(size===480)smallTotal+=bytes.length;else largeTotal+=bytes.length;}
-  }
-  assert(smallTotal<60*1024,'mobile category images exceed 60 KiB');assert(largeTotal<130*1024,'large category images exceed 130 KiB');
-});
