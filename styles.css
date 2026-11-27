@@ -295,3 +295,7 @@ footer { padding-bottom: calc(5.5rem + env(safe-area-inset-bottom, 0px)); }
   .visit-grid { grid-template-columns: 1fr; }
   .footer-inner { flex-direction: column; justify-content: center; text-align: center; }
 }
+
+.menu-category-image { width: 100%; max-width: 760px; aspect-ratio: 11 / 5; object-fit: cover; margin: 0 auto 1.5rem; border-radius: .75rem; background: var(--soft); }
+.menu > .wrap > .photo-note { margin-block: 0 1.25rem; }
+@media (max-width: 760px) { .menu-category-image { margin-bottom: 1.15rem; } }
